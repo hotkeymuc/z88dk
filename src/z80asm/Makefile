@@ -1,7 +1,6 @@
 #------------------------------------------------------------------------------
 # Z88DK Z80 Module Assembler
 #
-# Copyright (C) Gunther Strube, InterLogic 1993-99
 # Copyright (C) Paulo Custodio, 2011-2017
 # License: http://www.perlfoundation.org/artistic_license_2_0
 #------------------------------------------------------------------------------
@@ -29,14 +28,20 @@ TEST_SRC_LIB:=t/testlib.c
 #------------------------------------------------------------------------------
 # variables
 #------------------------------------------------------------------------------
-TARGET =		$(PROJ)$(EXE)
-MSVC_TARGET =	../../win32/Debug/$(TARGET)
+TARGET 			= $(PROJ)$(EXE)
+MSVC_TARGET 	= ../../win32/Debug/$(TARGET)
 
-OPT = -O3
-
-STD = -std=gnu11
-LOCAL_LIB :=	lib
-LOCAL_CFLAGS +=	-MMD -I. -I$(LOCAL_LIB) -It -g -Wall -ftabstop=4 $(STD) $(OPT)
+OPT 			= -O3
+STD 			= -std=gnu11
+GLIB_CFLAGS		:= $(shell pkg-config --cflags glib-2.0)
+GLIB_LDFLAGS	:= $(shell pkg-config --libs   glib-2.0)
+LOCAL_LIB 		:= lib
+LOCAL_CFLAGS 	+= -g -Wall -ftabstop=4 -MMD \
+				   -I. -I$(LOCAL_LIB) -It $(STD) \
+				   $(GLIB_CFLAGS) $(OPT) \
+				   $(CFLAGS)
+LOCAL_LDFLAGS	+= $(GLIB_LDFLAGS) \
+				   $(LDFLAGS)
 
 #------------------------------------------------------------------------------
 # main
@@ -46,7 +51,7 @@ LOCAL_CFLAGS +=	-MMD -I. -I$(LOCAL_LIB) -It -g -Wall -ftabstop=4 $(STD) $(OPT)
 all: $(TARGET)
 
 $(TARGET): ../config.h $(OBJS)
-	$(CC) $(LOCAL_CFLAGS) $(CFLAGS) -o $(TARGET) $(OBJS) $(LDFLAGS)
+	$(CC) $(LOCAL_CFLAGS) -o $(TARGET) $(OBJS) $(LOCAL_LDFLAGS)
 
 ../config.h:
 	@echo \#define PREFIX \"/usr/local/share/z88dk\" 				 > $@
@@ -55,11 +60,11 @@ $(TARGET): ../config.h $(OBJS)
 	@echo \#define Z88DK_VERSION \"build-$(shell date +%Y%m%d)\"	>> $@
 
 %.o: %.c
-	$(CC) $(LOCAL_CFLAGS) $(CFLAGS) -c -o $@ $<
+	$(CC) $(LOCAL_CFLAGS) -c -o $@ $<
 
 # parser is too big to optimize with -O3
 parse.o: parse.c
-	$(CC) $(LOCAL_CFLAGS) $(CFLAGS) -O0 -c -o $@ $<
+	$(CC) $(LOCAL_CFLAGS) -O0 -c -o $@ $<
 
 #------------------------------------------------------------------------------
 # libraries
@@ -125,7 +130,7 @@ t/libtestlib.a : $(OBJS) $(TEST_SRC_LIB:.c=.o)
 $(TEST_SRC_MAIN:.c=.o) : t/libtestlib.a
 
 .o.out :
-	$(CC) -static $(CFLAGS) $< -o $(<:.o=$(EXE)) $(LDFLAGS) -Lt -ltestlib
+	$(CC) $(LOCAL_CFLAGS) $< -o $(<:.o=$(EXE)) $(LOCAL_LDFLAGS) -Lt -ltestlib
 	$(<:.o=$(EXE)) 2> $@~
 	diff -w $(<:.o=.bmk) $@~
 	mv -f $@~ $@
@@ -191,5 +196,9 @@ $(MSVC_TARGET) : $(wildcard *.c) $(wildcard *.h)
 #------------------------------------------------------------------------------
 clean::
 	rm -f $(DEPENDS)
-	
+
 -include $(DEPENDS)
+
+gcc_vars:
+	@echo $(LOCAL_CFLAGS)
+	@echo $(LOCAL_LDFLAGS)

@@ -577,12 +577,12 @@ int main (int argc, char **argv)
 
 	# build
 	my $cc = "gcc $CFLAGS -o test.exe test.c $compile_args $LDFLAGS";
-	note "line ", (caller)[2], ": $cc";
+	diag "line ", (caller)[2], ": $cc";
 	
 	my $ok = (0 == system($cc));
-	ok $ok, "cc";
+	ok $ok, $cc;
 	
-	exit 1 if !$ok;	# no need to cotinue if compilation failed
+	exit 1 if !$ok;	# no need to continue if compilation failed
 }
 
 #------------------------------------------------------------------------------
@@ -682,32 +682,18 @@ sub get_copyright {
 sub get_gcc_options {
 	our %FLAGS;
 	
-	# hack
-	$ENV{LOCAL_LIB} = "lib";
-	$ENV{OPT} ||= "";
-	
 	if ( ! %FLAGS ) {
-		open(my $pipe, "make -p|") or die;
-		while (<$pipe>) {
-			if (/^\w*(CFLAGS|LDFLAGS)\s*=\s*(.*)/) {
-				my($flag, $text) = ($1, $2);
-				
-				$text =~ s/\$\((\w+)\)/ $ENV{$1} || "" /ge;
-				defined $ENV{$1} or warn "Environment variable $1 not found";
-				
-				$text =~ s/\$\(shell (.*?)\)/ `$1` /ge;
-				$text =~ s/\s+/ /g;
-				
-				$FLAGS{$flag} = $text;
-				last if scalar keys %FLAGS == 2;
-			}
-		}
+		open(my $pipe, "make -s --no-print-directory gcc_vars|") or die;
+		chomp($FLAGS{LOCAL_CFLAGS} = <$pipe>);
+		chomp($FLAGS{LOCAL_LDLAGS} = <$pipe>);
+		1 while defined scalar(<$pipe>);
 		close($pipe) or die;
-		$FLAGS{CFLAGS}  ||= '';
-		$FLAGS{LDFLAGS} ||= '';
+		$FLAGS{LOCAL_CFLAGS}  ||= '';
+		$FLAGS{LOCAL_LDFLAGS} ||= '';
+		$FLAGS{LOCAL_CFLAGS}  .= ' -O0';	# parse needs -O0
 	}
 	
-	return @FLAGS{qw( CFLAGS LDFLAGS )};
+	return @FLAGS{qw( LOCAL_CFLAGS LOCAL_LDFLAGS )};
 };
 
 1;

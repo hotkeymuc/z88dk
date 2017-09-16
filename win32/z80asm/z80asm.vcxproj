@@ -89,11 +89,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\..\src\z80asm\lib</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\src\z80asm\lib;C:/MinGW/include/glib-2.0;C:/MinGW/lib/glib-2.0/include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>C:/MinGW/lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;libglib-2.0.dll.a;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
       <Command>
@@ -129,13 +131,15 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\..\src\z80asm\lib</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\src\z80asm\lib;C:/MinGW/include/glib-2.0;C:/MinGW/lib/glib-2.0/include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>C:/MinGW/lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;libglib-2.0.dll.a;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <CustomBuildStep>
       <Command>copy /y $(OutDir)$(TargetName)$(TargetExt) ..\..\bin\$(TargetName)$(TargetExt)</Command>
@@ -202,6 +206,7 @@
     <ClCompile Include="..\..\src\z80asm\lib\strhash.c" />
     <ClCompile Include="..\..\src\z80asm\lib\strpool.c" />
     <ClCompile Include="..\..\src\z80asm\listfile.c" />
+    <ClCompile Include="..\..\src\z80asm\main.c" />
     <ClCompile Include="..\..\src\z80asm\model.c" />
     <ClCompile Include="..\..\src\z80asm\modlink.c" />
     <ClCompile Include="..\..\src\z80asm\module.c" />
@@ -213,6 +218,7 @@
     <ClCompile Include="..\..\src\z80asm\sym.c" />
     <ClCompile Include="..\..\src\z80asm\symtab.c" />
     <ClCompile Include="..\..\src\z80asm\z80asm.c" />
+    <ClCompile Include="..\..\src\z80asm\z80asm_ori.c" />
     <ClCompile Include="..\..\src\z80asm\z80pass.c" />
   </ItemGroup>
   <ItemGroup>
@@ -244,6 +250,7 @@
     <ClInclude Include="..\..\src\z80asm\lib\uthash.h" />
     <ClInclude Include="..\..\src\z80asm\lib\utlist.h" />
     <ClInclude Include="..\..\src\z80asm\listfile.h" />
+    <ClInclude Include="..\..\src\z80asm\main.h" />
     <ClInclude Include="..\..\src\z80asm\model.h" />
     <ClInclude Include="..\..\src\z80asm\modlink.h" />
     <ClInclude Include="..\..\src\z80asm\module.h" />
@@ -260,6 +267,7 @@
     <ClInclude Include="..\..\src\z80asm\symbol.h" />
     <ClInclude Include="..\..\src\z80asm\symtab.h" />
     <ClInclude Include="..\..\src\z80asm\tokens.h" />
+    <ClInclude Include="..\..\src\z80asm\types.h" />
     <ClInclude Include="..\..\src\z80asm\z80asm.h" />
   </ItemGroup>
   <ItemGroup>
