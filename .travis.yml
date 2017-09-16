@@ -13,8 +13,8 @@ matrix:
         apt:
           sources:
             - ubuntu-toolchain-r-test
-          packages:
             - glib-2.0
+          packages:
             - g++-4.9
       env:
          - MATRIX_EVAL="CC=gcc-4.9 && CXX=g++-4.9"
@@ -25,8 +25,8 @@ matrix:
           sources:
             - ubuntu-toolchain-r-test
             - llvm-toolchain-precise-3.6
-          packages:
             - glib-2.0
+          packages:
             - clang-3.6
       env:
          - MATRIX_EVAL="CC=clang-3.6 && CXX=clang++-3.6"
