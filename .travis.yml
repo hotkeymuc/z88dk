@@ -41,7 +41,7 @@ matrix:
 
 before_install:
   - eval "${MATRIX_EVAL}"
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update ; brew upgrade glib ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install glib ; fi
 
 before_script: 
   - export PATH=`pwd`/bin:$PATH
